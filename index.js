@@ -90,7 +90,7 @@ function songMsg(recipientId, element, track) {
                 "template_type": "generic",
                 "elements": [{
                     "title": track,
-                    "subtitle": "Album: "+ album + "/n" + "Artist: " + artist + "/n"  + "Duration : " +((h * 60) + m) + ":" + s,
+                    "subtitle": "Album: "+ album + "\n" + "Artist: " + artist + "\n"  + "Duration : " +((h * 60) + m) + ":" + s,
                     "image_url": image ,
                     "buttons": [{
                         "type": "web_url",
