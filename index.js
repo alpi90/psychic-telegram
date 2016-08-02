@@ -115,6 +115,10 @@ function findTrack(track){
             var result = [];
             var items =data.tracks.items;
             items.forEach(function (row) {
+                //result limit = 5
+                if(result.length == 5){
+                    resolve(element);
+                }
                 var album    = row.album.name;
                 var image    = row.album.images[0].url;
                 var artist   = row.artists[0].name;
