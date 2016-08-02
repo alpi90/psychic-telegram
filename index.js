@@ -76,7 +76,11 @@ function songMsg(recipientId, element, track) {
     var album    = element.album;
     var image    = element.image;
     var artist   = element.artist;
-    var duration = element.duration;
+    var duration = Number(element.duration);
+    var date = new Date(duration);
+    var h = date.getHours();
+    var m = date.getMinutes();
+    var s = date.getSeconds();
     var url      = element.url;
 
     message = {
@@ -86,7 +90,7 @@ function songMsg(recipientId, element, track) {
                 "template_type": "generic",
                 "elements": [{
                     "title": track,
-                    "subtitle": "Album: "+ album + " Artist: " + artist +" Duration : " +duration,
+                    "subtitle": "Album: "+ album + " Artist: " + artist +" Duration : " +((h * 60) + m) + ":" + s,
                     "image_url": image ,
                     "buttons": [{
                         "type": "web_url",
