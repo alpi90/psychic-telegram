@@ -40,7 +40,9 @@ app.post('/webhook', function (req, res) {
                     if(result.length == 0){
                         sendMessage(event.sender.id, {text: "No song found with " + msg});
                     }else{
-                        sendMessage(event.sender.id, {text: "Song found with " + msg});
+                        result.forEach(function(element){
+                            songMsg(event.sender.id,element,msg)
+                        })
                     }
                 })
 
@@ -67,6 +69,36 @@ function sendMessage(recipientId, message) {
             console.log('Error: ', response.body.error);
         }
     });
+};
+
+function songMsg(recipientId, element, track) {
+
+    var album    = element.album;
+    var image    = element.image;
+    var artist   = element.artist;
+    var duration = element.duration;
+    var url      = element.url;
+
+    message = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": track,
+                    "subtitle": "Album: "+ album + " Artist: " + artist +" Duration : " +duration,
+                    "image_url": image ,
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": url,
+                        "title": "Listen from spotify"
+                    }]
+                }]
+            }
+        }
+    };
+
+    sendMessage(recipientId, message);
 };
 
 function findTrack(track){
