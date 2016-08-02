@@ -2,6 +2,7 @@
  * Created by alp on 02.08.2016.
  */
 var express = require('express');
+var Promise = require("bluebird");
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
@@ -31,10 +32,17 @@ app.post('/webhook', function (req, res) {
         var event = events[i];
 
         if (event.message && event.message.text) {
-            if(i == 0){
-                sendMessage("dsa");
-            }
-            sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+            var msg = event.message.text;
+            findTrack(msg)
+                .then(function(result){
+                    if(result.length == 0){
+                        sendMessage(event.sender.id, {text: "No song found with " + msg});
+                    }else{
+                        sendMessage(event.sender.id, {text: "Song found with " + msg});
+                    }
+                })
+
+
         }
     }
     res.sendStatus(200);
@@ -56,5 +64,31 @@ function sendMessage(recipientId, message) {
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
         }
+    });
+};
+
+function findTrack(track){
+    return new Promise(function(resolve,reject) {
+        var spotify = require('spotify');
+
+        spotify.search({ type: 'track', query: track }, function(err, data) {
+            if ( err ) {
+                console.log('Error occurred: ' + err);
+                reject(err);
+            }
+
+            var result = [];
+            var items =data.tracks.items;
+            items.forEach(function (row) {
+                var album    = row.album.name;
+                var image    = row.album.images[0].url;
+                var artist   = row.artists[0].name;
+                var duration = row.duration_ms;
+                var url      = row.external_urls.spotify
+                var element = {'album' : album,'image' :image , 'artist' : artist, 'duration' : duration, 'url' : url};
+                result.push(element);
+            })
+            resolve (result);
+        });
     });
 };
