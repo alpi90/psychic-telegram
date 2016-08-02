@@ -33,8 +33,10 @@ app.post('/webhook', function (req, res) {
 
         if (event.message && event.message.text) {
             var msg = event.message.text;
+            console.log(msg);
             findTrack(msg)
                 .then(function(result){
+                    console.log(result);
                     if(result.length == 0){
                         sendMessage(event.sender.id, {text: "No song found with " + msg});
                     }else{
@@ -68,6 +70,7 @@ function sendMessage(recipientId, message) {
 };
 
 function findTrack(track){
+    console.log("find track");
     return new Promise(function(resolve,reject) {
         var spotify = require('spotify');
 
@@ -88,6 +91,7 @@ function findTrack(track){
                 var element = {'album' : album,'image' :image , 'artist' : artist, 'duration' : duration, 'url' : url};
                 result.push(element);
             })
+            console.log("findtrack",result);
             resolve (result);
         });
     });
